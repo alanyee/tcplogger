@@ -10,7 +10,7 @@ ID = "/bin/id"
 PS = "/bin/ps"
 HEADER = ['time', 'user', 'pid', 'uid', 'act']
 
-csv_file = raw_input("Please type the name of the output csv: ")
+file_name = raw_input("Please type the name of the output csv: ")
 prompt = raw_input("Would you like to clear the cache? (y/n): ")
 ids_obj = UserIDs()
 
@@ -21,8 +21,8 @@ ids_obj.load()
 if prompt == "y":
     ids_obj.clear()
 
-with open(csv_file, 'w') as csvfile:
-    writer = csv.DictWriter(csvfile, fieldnames=HEADER)
+with open(file_name, 'w') as csv_file:
+    writer = csv.DictWriter(csv_file, fieldnames=HEADER)
     writer.writeheader()
     while True:
         ps = sp.check_output([PS, "aux"])
@@ -32,7 +32,7 @@ with open(csv_file, 'w') as csvfile:
         tcplines = tcp.splitlines()
         user = random.choice(pslines).strip().split() 
         while (user[0] == "root" or user[0] == "USER" or user[0] == "libstor+"):
-          user = random.choice(pslines).strip().split()
+            user = random.choice(pslines).strip().split()
         pid = user[1]
         user = user[0]
         if ids_obj.have(user):
