@@ -12,6 +12,7 @@ class UserIDs(object):
     def load(self):
         try:
             json_file = open('ids.json')
+            self.ids = json.load(json_file)
         except IOError:
             self.create()
 
