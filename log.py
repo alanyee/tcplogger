@@ -57,7 +57,7 @@ with open(file_name, 'w') as csv_file:
                     try:
                        for line in pslines:
                             if line.strip().split()[0] == user:
-                                search = line[64:]
+                                search = line[65:]
                                 found = search.find("sshd: ")
                                 if found != -1:
                                     uid = sp.check_output([ID, search[6:13]])
@@ -65,7 +65,7 @@ with open(file_name, 'w') as csv_file:
                         unknown_ids.append(user)
                         for line in pslines:
                             if line.strip().split()[0] == user:
-                                unknown_ids.append(line[64:])
+                                unknown_ids.append(line[65:])
                     continue
                 uid = uid[uid.find("=") + 1:uid.find("(")]
                 mapped_ids.add(user, uid)

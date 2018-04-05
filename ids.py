@@ -3,8 +3,6 @@
 import json
 import subprocess as sp
 
-ALPHA = "abcdefghijklmnopqrstuvwxyz"
-ALPHA15 = "abcdefghij"
 ID = "/bin/id"
 
 class UserIDs(object):
@@ -19,8 +17,7 @@ class UserIDs(object):
             json_file = open('ids.json')
             self.ids = json.load(json_file)
         except IOError:
-            print "Cache does not exist"
-            #self.create()
+            print "Preexisting cache could not be found"
 
     def access(self, user):
         """Access information in cache"""
@@ -44,18 +41,3 @@ class UserIDs(object):
         json_file = open("ids.json", "w")
         json_file.write(id_json)
         json_file.close()
-
-    def create(self):
-        """Prepopulate cache, eventually will remove"""
-        abc = ALPHA
-        for i in abc:
-            if i == "h":
-                abc = ALPHA15
-            for j in abc:
-                user = "cs12x" + i + j
-                uid = sp.check_output([ID, "%s" % user])
-                uid = uid[uid.find("=") + 1:uid.find("(")]
-                self.ids[uid] = user
-            print i
-            if i == "h":
-                break
