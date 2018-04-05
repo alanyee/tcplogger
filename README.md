@@ -3,11 +3,14 @@ TCP Logger
 
 Smart logging for TCP connections
 
-## WIP
-* PEP 8
+## Done
 * Dynamic dictionary cache
-* Smartly determine misconfigured UID
+* PEP 8
+
+## WIP
+* Make Python 2/3 compatible
+* Dynamically determines misconfigured UID
 
 ## TODOS
-* Make Python 2/3 compatible
+* Correctly maps TCP connections to active process
 * Replace object-oriented programming with functional
