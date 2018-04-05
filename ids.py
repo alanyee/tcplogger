@@ -19,7 +19,8 @@ class UserIDs(object):
             json_file = open('ids.json')
             self.ids = json.load(json_file)
         except IOError:
-            self.create()
+            print "Cache does not exist"
+            #self.create()
 
     def access(self, user):
         """Access information in cache"""

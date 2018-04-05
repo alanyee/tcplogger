@@ -52,15 +52,23 @@ with open(file_name, 'w') as csv_file:
             # Attempts to figure out username and uid
             else:
                 try:
-                    uid = sp.check_output([ID, "%s" % user])
-                    uid = uid[uid.find("=") + 1:uid.find("(")]
-                    mapped_ids.add(user, uid)
+                    uid = sp.check_output([ID, user])
                 except sp.CalledProcessError:
-                    unknown_ids.append(user)
-                    for line in pslines:
-                        if line.strip().split()[0] == user:
-                            unknown_ids.append(line[64:])
+                    try:
+                       for line in pslines:
+                            if line.strip().split()[0] == user:
+                                search = line[64:]
+                                found = search.find("sshd: ")
+                                if found != -1:
+                                    uid = sp.check_output([ID, search[6:13]])
+                    except sp.CalledProcessError:
+                        unknown_ids.append(user)
+                        for line in pslines:
+                            if line.strip().split()[0] == user:
+                                unknown_ids.append(line[64:])
                     continue
+                uid = uid[uid.find("=") + 1:uid.find("(")]
+                mapped_ids.add(user, uid)
             acts = []
             # Finds all of a given user's active TCP connections
             for line in tcplines:
