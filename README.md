@@ -5,9 +5,9 @@ Smart logging for TCP connections
 
 ## WIP
 * PEP 8
-* Installing smart features
+* Dynamic dictionary cache
+* Smartly determine misconfigured UID
 
 ## TODOS
-* Dynamic dictionary
 * Make Python 2/3 compatible
 * Replace object-oriented programming with functional
