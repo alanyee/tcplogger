@@ -2,7 +2,7 @@ import json
 import subprocess as sp
 
 ALPHA = "abcdefghijklmnopqrstuvwxyz"
-ALPHA15 = "abcdefghijk"
+ALPHA15 = "abcdefghij"
 ID = "/bin/id"
 
 class UserIDs(object):
@@ -12,12 +12,8 @@ class UserIDs(object):
     def load(self):
         try:
             json_file = open('ids.json')
-        except FileNotFoundError:
+        except IOError:
             self.create()
-            json_file = open('ids.json')
-
-        # Loads cache
-        self.ids = json.load(json_file)
 
     def access(self, user):
         return self.ids[user].encode('utf-8')
@@ -49,3 +45,5 @@ class UserIDs(object):
                 uid = uid[uid.find("=") + 1:uid.find("(")]
                 self.ids[uid] = user
             print i
+            if i == "h":
+                break

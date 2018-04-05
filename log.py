@@ -3,7 +3,7 @@ import random
 import subprocess as sp
 import time
 
-from tcplogger.ids import UserIDs
+from ids import UserIDs
 
 CAT = "/bin/cat"
 ID = "/bin/id"
