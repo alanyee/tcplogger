@@ -26,6 +26,7 @@ class UserIDs(object):
     def add(self, user, uid):
         """Adds user and uid to cache"""
         self.ids[user] = uid
+        self.ids[uid] = user
 
     def have(self, user):
         """Check if user's information is in cache"""

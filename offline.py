@@ -1,35 +1,30 @@
 """Offline cache editor"""
+import argparse
 
 from ids import UserIDs
+
+parser = argparse.ArgumentParser(description='Offline cache editor')
+parser.add_argument("-a", "--add", nargs=2, metavar=('username', 'uid'),
+                    help="Adds specified username and uid to cache")
+parser.add_argument("-d", "--delete", nargs=1, metavar='username|uid',
+                    help="Deletes specified username or uid from cache")
+parser.add_argument("-c", "--clear", action='store_true', help="Clears all cache")
+args = parser.parse_args()
 
 mapped = UserIDs()
 mapped.load()
 
-print "Cache is loaded offline. Proceed with caution." 
-print "Would you like to add, remove, or clear the cache?" 
+# Add specified username and uid to cache
+if args.add:
+    user, uid = args.add[0], args.add[1]
+    mapped.add(user, uid)
+# Deletes specified username or uid from cache
+if args.delete:
+    user = args.delete[0]
+    if mapped.have(user):
+        mapped.remove(user)
+#Clears all cache
+if args.clear:
+    mapped.clear()
 
-while True:
-    answer = raw_input("(add/remove/clear/exit): ")
-    if answer == "add":
-        user = raw_input("Please enter the user you wish to add: ")
-        uid = raw_input("Please enter the uid you wish to associate with the user: ")
-        mapped.add(user, uid)
-        mapped.add(uid, user)
-        print "Added " + user + " and " + uid + " successfully" 
-    elif answer == "remove":
-        user = raw_input("Please enter the user or uid you wish to remove: ")
-        if mapped.have(user):
-            mapped.remove(user)
-            print "Removed " + user + " successfully"
-    elif answer == "clear":
-        sure = raw_input("Are you sure to want to clear all the cache? (y/n): ")
-        if sure == "y":
-            mapped.clear()
-            print "Cleared successfully"
-    else:
-        exit = raw_input("Would you like to continue working? (y/n): ")
-        if exit == "n":
-            save = raw_input("Would you like to save your work? (y/n): ")
-            if save == "y":
-                mapped.close()
-            break
+mapped.close()

@@ -1,5 +1,6 @@
 """Logger for TCP connections by user"""
 
+import argparse
 import csv
 import random
 import subprocess as sp
@@ -12,8 +13,12 @@ ID = "/bin/id"
 PS = "/bin/ps"
 HEADER = ['time', 'user', 'pid', 'uid', 'act']
 
-file_name = raw_input("Please type the name of the output csv: ")
-prompt = raw_input("Would you like to clear the cache? (y/n): ")
+parser = argparse.ArgumentParser(description='Smart TCP Logger')
+parser.add_argument("-f", "--filename", nargs=1, metavar="filename",
+                    help="Writes to specified filename")
+parser.add_argument("-c", "--clear", action='store_true', help="Clears all cache")
+args = parser.parse_args()
+
 mapped = UserIDs()
 unknowns = set()
 
@@ -21,11 +26,16 @@ unknowns = set()
 mapped.load()
 
 # Clears cache
-if prompt == "y":
+if args.clear:
     mapped.clear()
 
+if args.filename:
+    filename = args.filename[0]
+else:
+    filename = "output.csv"
+   
 # Creates csv file
-with open(file_name, 'w') as csv_file:
+with open(filename, 'w') as csv_file:
     writer = csv.DictWriter(csv_file, fieldnames=HEADER)
     writer.writeheader()
     try:
@@ -55,7 +65,7 @@ with open(file_name, 'w') as csv_file:
                 if uid is None:
                     continue
                 mapped.add(user, uid)
-                mapped.add(uid, user)
+            # Checks and corrects uid misconfiguration from ps table
             if user.isdigit():
                 user, uid = mapped.access(user), mapped.access(uid)
             # Finds all of a given user's active TCP connections

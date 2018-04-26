@@ -6,12 +6,12 @@ Smart logging for TCP connections
 ## Done
 * Dynamic dictionary cache
 * PEP 8
+* New program to manipulate cache offline
+* Dynamically determines misconfigured UID
+* Implement argparse for cron
 
 ## WIP
-* Class for resolving UIDs
-* New program to manipulate cache offline
 * Make Python 2/3 compatible
-* Dynamically determines misconfigured UID
 
 ## TODOS
 * Correctly maps TCP connections to active process
