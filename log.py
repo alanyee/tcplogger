@@ -11,7 +11,7 @@ from ids import UserIDs
 CAT = "/bin/cat"
 ID = "/bin/id"
 PS = "/bin/ps"
-HEADER = ['time', 'user', 'pid', 'uid', 'act']
+HEADER = ['time', 'user', 'pid', 'uid', 'proc', 'act']
 
 parser = argparse.ArgumentParser(description='Smart TCP Logger')
 parser.add_argument("-f", "--filename", nargs=1, metavar="filename",
@@ -51,8 +51,14 @@ with open(filename, 'w') as csv_file:
             # Ignores noise
             while user[0] == "root" or user[0] == "USER" or user[0] == "libstor+":
                 user = random.choice(pslines).strip().split()
+            length = len(user)
+            if length > 11:
+                proc = ''.join(user[10:length])
+            else:
+                proc = user[10]
             pid = user[1]
             user = user[0]
+            
             # Relies on cache first for finding user information
             if mapped.have(user):
                 uid = mapped.access(user)
@@ -77,11 +83,8 @@ with open(filename, 'w') as csv_file:
             if acts:
                 act = random.choice(acts).rstrip()
                 if act:
-                    writer.writerow({'time': '%d' % snap,
-                                     'user': '%s' % user,
-                                     'pid': '%s' % pid,
-                                     'uid': '%s' % uid,
-                                     'act': '%s' % act})
+                    writer.writerow({'time': snap, 'user': user, 'pid': pid,
+                                    'uid': uid, 'proc': proc, 'act': act})
 # Saves cache and prints out unknown users upon shutdown
     except KeyboardInterrupt:
         mapped.close()
