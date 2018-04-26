@@ -14,15 +14,15 @@ HEADER = ['time', 'user', 'pid', 'uid', 'act']
 
 file_name = raw_input("Please type the name of the output csv: ")
 prompt = raw_input("Would you like to clear the cache? (y/n): ")
-mapped_ids = UserIDs()
-unknown_ids = []
+mapped = UserIDs()
+unknowns = set()
 
 # Tries to open cache, and creates one if it doesn't already exist
-mapped_ids.load()
+mapped.load()
 
 # Clears cache
 if prompt == "y":
-    mapped_ids.clear()
+    mapped.clear()
 
 # Creates csv file
 with open(file_name, 'w') as csv_file:
@@ -44,33 +44,22 @@ with open(file_name, 'w') as csv_file:
             pid = user[1]
             user = user[0]
             # Relies on cache first for finding user information
-            if mapped_ids.have(user):
-                uid = mapped_ids.access(user)
+            if mapped.have(user):
+                uid = mapped.access(user)
             # Ignores username or uid if misconfigured
-            elif user in unknown_ids:
+            elif user in unknowns:
                 continue
             # Attempts to figure out username and uid
             else:
-                try:
-                    uid = sp.check_output([ID, user])
-                except sp.CalledProcessError:
-                    try:
-                       for line in pslines:
-                            if line.strip().split()[0] == user:
-                                search = line[65:]
-                                found = search.find("sshd: ")
-                                if found != -1:
-                                    uid = sp.check_output([ID, search[6:13]])
-                    except sp.CalledProcessError:
-                        unknown_ids.append(user)
-                        for line in pslines:
-                            if line.strip().split()[0] == user:
-                                unknown_ids.append(line[65:])
+                uid = mapped.resolve(user, pslines, unknowns)
+                if uid is None:
                     continue
-                uid = uid[uid.find("=") + 1:uid.find("(")]
-                mapped_ids.add(user, uid)
-            acts = []
+                mapped.add(user, uid)
+                mapped.add(uid, user)
+            if user.isdigit():
+                user, uid = mapped.access(user), mapped.access(uid)
             # Finds all of a given user's active TCP connections
+            acts = []
             for line in tcplines:
                 if line.strip().split()[7] == uid:
                     acts.append(line)
@@ -85,6 +74,6 @@ with open(file_name, 'w') as csv_file:
                                      'act': '%s' % act})
 # Saves cache and prints out unknown users upon shutdown
     except KeyboardInterrupt:
-        mapped_ids.close()
-        for unknown in unknown_ids:
-            print unknown
+        mapped.close()
+        for unknown in unknowns:
+            print "Unknown IDs: " + str(unknown)

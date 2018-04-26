@@ -8,6 +8,8 @@ Smart logging for TCP connections
 * PEP 8
 
 ## WIP
+* Class for resolving UIDs
+* New program to manipulate cache offline
 * Make Python 2/3 compatible
 * Dynamically determines misconfigured UID
 
