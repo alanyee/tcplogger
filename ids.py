@@ -8,16 +8,17 @@ ID = "/bin/id"
 class UserIDs(object):
     """Interface for handling the cache"""
 
-    def  __init__(self, ids=None):
+    def  __init__(self, ids=None, name=None):
         self.ids = ids if ids is not None else {}
 
-    def load(self):
-        """Load cache, otherwise just create new cache"""
+    def load(self, cache):
+        """Attemtps to load preexisting cache"""
+        self.name = cache
         try:
-            json_file = open('ids.json')
-            self.ids = json.load(json_file)
-        except IOError:
-            print "Preexisting cache could not be found"
+            cache = open(cache)
+            self.ids = json.load(cache)
+        except:
+            pass
 
     def access(self, user):
         """Access information in cache"""
@@ -37,17 +38,18 @@ class UserIDs(object):
         try:
             del self.ids[self.ids[user]]
             del self.ids[user]
+            return 0
         except KeyError:
-            print "No such user or uid found in cache"
+            return 1
 
     def clear(self):
         """Clear cache"""
         self.ids.clear()
 
-    def resolve(self, user, pslines, unknowns):
+    def resolve(self, user, pslines, unknowns, null):
         """Resolves finding unknown UIDs"""
         try:
-            return sp.check_output([ID, "-u", user]).rstrip()
+            return sp.check_output([ID, "-u", user], stderr=null).rstrip()
 	except sp.CalledProcessError:
             try:
                 for line in pslines:
@@ -57,20 +59,14 @@ class UserIDs(object):
                         if found != -1:
                             return search[6:13]
                 unknowns.add(user)
-                for line in pslines:
-                    if line.strip().split()[0] == user:
-                        unknowns.add(line)
                 return None
             except sp.CalledProcessError:
                 unknowns.add(user)
-                for line in pslines:
-                    if line.strip().split()[0] == user:
-                        unknowns.add(line)
                 return None
 
     def close(self):
-        """Safely closes and saves files"""
+        """Safely closes and saves cache"""
         id_json = json.dumps(self.ids)
-        json_file = open("ids.json", "w")
+        json_file = open(self.name, "w")
         json_file.write(id_json)
         json_file.close()
