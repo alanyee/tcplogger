@@ -1,14 +1,15 @@
 TCP Logger
 =========================
 
-Smart logging for TCP connections
+Unix-like logging for TCP connections
 
 ## Done
-* Dynamic dictionary cache
 * PEP 8
-* New program to manipulate cache offline
+* Dynamic dictionary cache
 * Dynamically determines misconfigured UID
-* Implement argparse for cron
+* Program to manipulate cache offline
+* Unix-like behavior
+* Programs are now executable
 
 ## WIP
 * Make Python 2/3 compatible
