@@ -2,6 +2,7 @@
 
 import json
 import subprocess as sp
+import sys
 
 ID = "/bin/id"
 
@@ -46,10 +47,10 @@ class UserIDs(object):
         """Clear cache"""
         self.ids.clear()
 
-    def resolve(self, user, pslines, unknowns, null):
+    def resolve(self, user, pslines, unknowns):
         """Resolves finding unknown UIDs"""
         try:
-            return sp.check_output([ID, "-u", user], stderr=null).rstrip()
+            return sp.check_output([ID, "-u", user], stderr=sys.stderr).rstrip()
 	except sp.CalledProcessError:
             try:
                 for line in pslines:

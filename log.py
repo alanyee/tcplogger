@@ -3,7 +3,6 @@
 
 import argparse
 import csv
-import os
 import random
 import subprocess as sp
 import sys
@@ -36,7 +35,6 @@ if args.filename == "_":
 else:
     filename = args.filename
 
-null = open(os.devnull, 'w') 
 # Creates csv file
 with open(filename, 'w') as csv_file:
     if args.filename == "_":
@@ -72,7 +70,7 @@ with open(filename, 'w') as csv_file:
                 continue
             # Attempts to figure out username and uid
             else:
-                uid = mapped.resolve(user, pslines, unknowns, null)
+                uid = mapped.resolve(user, pslines, unknowns)
                 if uid is None:
                     continue
                 mapped.add(user, uid)
@@ -92,11 +90,9 @@ with open(filename, 'w') as csv_file:
                                     'uid': uid, 'proc': proc, 'act': act})
 # Actions to be executed upon shutdown
     except KeyboardInterrupt:
-        null.close()
         if args.filename == "_":
             temp.close()
         if args.cache:
             if args.clear:
                 mapped.clear()
             mapped.close()
-           
