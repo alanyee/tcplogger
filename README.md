@@ -5,6 +5,8 @@ Unix-like logging for TCP connections
 
 ## Usage	
 ```
+usage: log.py [-h] [-f [filename]] [-c cachefile] [-C]
+
 Unix-like TCP Logger
 
 optional arguments:
@@ -30,4 +32,3 @@ optional arguments:
 ## TODOS
 * Correctly maps TCP connections to active process
 * Replace object-oriented programming with functional
-usage: log.py [-h] [-f [filename]] [-c cachefile] [-C]
